@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -Wall -std=c++11 $(pkg-config --libs glfw3) -lglfw -lGL -lm -lX11 -lpthread -lXrandr -lXi -ldl -lGLU -lGLEW -DGLEW_STATIC
+CFLAGS = -g -Wall -std=c++11 $(pkg-config --libs glfw3) -lglfw -lGL -lm -lX11 -lpthread -ldl -lGLU -lGLEW -DGLEW_STATIC #-lXrandr -lXi
 INCLUDES = -I ./include
 SRCS := $(wildcard *.cpp ./src/*/*.cpp)
 MAIN = Main
@@ -7,6 +7,9 @@ MAIN = Main
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(MAIN) clean run
+
+test: $(MAIN) clean
+	valgrind --tool=cachegrind ./$(MAIN)
 
 $(MAIN): $(OBJS)
 	@echo Linking...
