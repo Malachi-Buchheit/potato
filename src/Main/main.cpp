@@ -7,6 +7,7 @@
 #include "static_sprite.h"
 #include "sprite.h"
 #include "renderable_2d.h"
+#include "timer.h"
 
 #include <time.h>
 
@@ -37,7 +38,7 @@ int main() {
 
 	std::vector<graphics::Renderable2D*> sprites;
 	srand(time(NULL));
-	float scale = 3;
+	float scale = 5;
 	for(float y = 0; y < 9*scale; y++)
 		for(float x = 0; x < 16*scale; x++)
 			sprites.push_back(new graphics::Sprite(x/scale, y/scale, 0.9f/scale, 0.9f/scale, math::vec4(rand()%1000/1000.0f, rand()%1000/1000.0f, rand()%1000/1000.0f, 1)));
@@ -46,13 +47,12 @@ int main() {
 	//graphics::Simple2DRenderer renderer;
 	graphics::Batch2DRenderer renderer;
 	
-	clock_t t;
+	Timer t;
 	float min = -1, max = -1, val;
 	long count = 0;
 	long double sum = 0;
 	while(!window.shouldClose()) {
-		t = clock(); count++;
-
+		t.reset(); count++;
 
 		window.clear();
 		#define SPEED 0.05f
@@ -77,9 +77,7 @@ int main() {
 		renderer.flush();
 		window.update();
 
-
-		t = clock() - t;
-		val = CLOCKS_PER_SEC/(float)t;
+		val = 1.0 / t.elapsed();
 		sum += val;
 		if(min == -1 || val < min)
 			min = val;
