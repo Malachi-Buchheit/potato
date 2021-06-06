@@ -25,6 +25,12 @@ run:
 clean:
 	rm -r $(OUT)
 
+.PHONY: push
+push:
+	git add .
+	git commit
+	git push
+
 $(MAIN): $(OBJS)
 	@echo Linking...
 	$(CC) $(CFLAGS) -o $(OUT)/$(MAIN) $(OBJS)
