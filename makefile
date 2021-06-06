@@ -1,8 +1,8 @@
 MAIN = run_program
-INCLUDES = -I ./include
 OUT = ./out
 VALG = valgrind_output.txt
 CAG = cachegrind_output.txt
+INCLUDES = -I ./include
 SRCS := $(shell find $(SRC_DIRS) -name *.cpp)
 OBJS := $(SRCS:%=$(OUT)/%.o)
 
