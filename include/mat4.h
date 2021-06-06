@@ -3,6 +3,7 @@
 #include "math.h"
 #include <iostream>
 #include <iomanip>
+#include <cstring>
 
 namespace math {
 struct mat4 {
@@ -27,12 +28,11 @@ struct mat4 {
     mat4 &multiply(const mat4 &);
     
     friend mat4 operator*(const mat4&, const mat4&);
-    friend mat4 operator*=(mat4&, const mat4&);
+    mat4& operator*=(const mat4&);
     friend std::ostream &operator<<(std::ostream&, const mat4&);
 };
 
 mat4 operator*(const mat4&, const mat4&);
-mat4 operator*=(mat4&, const mat4&);
 std::ostream &operator<<(std::ostream&, const mat4&);
 };
 

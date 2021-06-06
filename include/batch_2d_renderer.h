@@ -1,5 +1,6 @@
 #pragma once
 #include <deque>
+#include <cstdlib>
 #include "renderer2d.h"
 #include "index_buffer.h"
 

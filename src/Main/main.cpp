@@ -41,18 +41,27 @@ int main() {
 	float scale = 5;
 	for(float y = 0; y < 9*scale; y++)
 		for(float x = 0; x < 16*scale; x++)
-			sprites.push_back(new graphics::Sprite(x/scale, y/scale, 0.9f/scale, 0.9f/scale, math::vec4(rand()%1000/1000.0f, rand()%1000/1000.0f, rand()%1000/1000.0f, 1)));
+			sprites.push_back(new graphics::Sprite(x/scale, y/scale, 0.9f/scale, 0.9f/scale, math::vec4(rand()%1000/1000.0f, 0, rand()%1000/1000.0f, 1)));
 	//graphics::Sprite sprite(2, 3, 2, 2, math::vec4(1, 1, 1, 1));
 	//graphics::Renderable2D sprite1(math::vec3(1, 2, 0), math::vec2(1, 2), math::vec4(1, 0, 1, 1), shader);
 	//graphics::Simple2DRenderer renderer;
 	graphics::Batch2DRenderer renderer;
 	
-	Timer t;
+	Timer t, fps;
 	float min = -1, max = -1, val;
 	long count = 0;
 	long double sum = 0;
 	while(!window.shouldClose()) {
-		t.reset(); count++;
+		fps.reset(); count++;
+
+		int _tr = -5;
+		math::mat4 mat = math::mat4::translation(math::vec3(_tr, _tr, _tr));
+		//std::cout << mat << std::endl;
+		mat *= math::mat4::rotation(t.elapsed() * 500, math::vec3(0, 0, 1));
+		//std::cout << mat << std::endl;
+		mat *= math::mat4::translation(math::vec3(-_tr, -_tr, -_tr));
+		//std::cout << mat << std::endl;
+		shader.setUniformMat4("ml_matrix", mat);
 
 		window.clear();
 		#define SPEED 0.05f
@@ -77,7 +86,7 @@ int main() {
 		renderer.flush();
 		window.update();
 
-		val = 1.0 / t.elapsed();
+		val = 1.0 / fps.elapsed();
 		sum += val;
 		if(min == -1 || val < min)
 			min = val;

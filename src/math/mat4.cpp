@@ -23,17 +23,16 @@ mat4::mat4(const mat4 &m) {
 }
 
 mat4 &mat4::multiply(const mat4 &m) {
-    mat4 out(*this);
-    float num;
+    float data[4*4];
     for(int y = 0; y < 4; y++) {
         for(int x = 0; x < 4; x++) {
-            num = 0;
+            float num = 0.0f;
             for(int i = 0; i < 4; i++)
-                num += elem[x + i*4] * m.elem[i + y*4];
-            out.elem[y + x*4] = num;
+                num += elem[i + y*4] * m.elem[x + i*4];
+            data[x + y*4] = num;
         }
     }
-    *this = out;
+    memcpy(elem, data, 4*4*sizeof(float));
     return *this;
 }
 
@@ -41,8 +40,8 @@ mat4 math::operator*(const mat4 &l, const mat4 &r) {
     return mat4(l).multiply(r);
 }
 
-mat4 math::operator*=(mat4 &l, const mat4 &r) {
-    return l.multiply(r);
+mat4& mat4::operator*=(const mat4 &r) {
+    return multiply(r);
 }
 
 mat4 mat4::identity() {
@@ -84,17 +83,21 @@ mat4 mat4::rotation(float angle, const vec3 &axis) {
     float s = sin(r);
     float omc = 1 - c;
 
-    out.elem[0 + 0*4] = axis.x * omc + c;
-    out.elem[1 + 0*4] = axis.y * axis.x * omc + axis.z * s;
-    out.elem[2 + 0*4] = axis.z * axis.x * omc + axis.y * s;
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
 
-    out.elem[0 + 1*4] = axis.x * axis.y - axis.z * s;
-    out.elem[1 + 1*4] = axis.y * omc + c;
-    out.elem[2 + 1*4] = axis.y * axis.z * omc + axis.x * s;
+    out.elem[0 + 0*4] = x * x * omc + c;
+    out.elem[0 + 1*4] = y * x * omc + z * s;
+    out.elem[0 + 2*4] = x * z * omc - y * s;
 
-    out.elem[0 + 2*4] = axis.x * axis.z * omc + axis.y * s;
-    out.elem[1 + 2*4] = axis.y * axis.z * omc - axis.x * s;
-    out.elem[2 + 2*4] = axis.z * omc + c;
+    out.elem[1 + 0*4] = x * y * omc - z * s;
+    out.elem[1 + 1*4] = y * y * omc + c;
+    out.elem[1 + 2*4] = y * z * omc + x * s;
+
+    out.elem[2 + 0*4] = x * z * omc + y * s;
+    out.elem[2 + 1*4] = y * z * omc - x * s;
+    out.elem[2 + 2*4] = z * z * omc + c;
 
     return out;
 }

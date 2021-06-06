@@ -22,10 +22,10 @@ void Batch2DRenderer::init() {
     glVertexAttribPointer(
         SHADER_COLOR_INDEX, 
         4, 
-        GL_FLOAT, 
-        GL_FALSE, 
+        GL_UNSIGNED_BYTE, 
+        GL_TRUE, 
         RENDERER_VERTEX_SIZE, 
-        (const GLvoid*)(3*sizeof(GLfloat))
+        (const GLvoid*)(offsetof(VertexData, VertexData::color))
     );
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -61,20 +61,27 @@ void Batch2DRenderer::submit(const Renderable2D *renderable) {
     const math::vec2 &size = renderable->getSize();
     const math::vec4 &color = renderable->getColor();
 
+    int r = color.x * 255;
+    int g = color.y * 255;
+    int b = color.z * 255;
+    int a = color.w * 255;
+
+    unsigned int c = a << 24 | b << 16 | g << 8 | r;
+
     buffer->vertex = pos;
-    buffer->color = color;
+    buffer->color = c;
     buffer++;
 
     buffer->vertex = math::vec3(pos.x+size.x, pos.y, pos.z);
-    buffer->color = renderable->getColor();
+    buffer->color = c;
     buffer++;
 
     buffer->vertex = math::vec3(pos.x, pos.y+size.y, pos.z);
-    buffer->color = renderable->getColor();
+    buffer->color = c;
     buffer++;
 
     buffer->vertex = math::vec3(pos.x+size.x, pos.y+size.y, pos.z);
-    buffer->color = renderable->getColor();
+    buffer->color = c;
     buffer++;
 
     index_count += 6;
